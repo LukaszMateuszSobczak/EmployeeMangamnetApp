@@ -3,7 +3,7 @@ using EmployeeManagmentApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml;
+
 
 
 namespace EmployeeManagmentApp.Controllers
@@ -11,13 +11,15 @@ namespace EmployeeManagmentApp.Controllers
     [Authorize]
     public class EmployeeController : Controller
     {
-        private IEmployeeService _service;
+        private IEmployeeService _employeeService;
         private UserManager<IdentityUser> _userManager;
+        private IExportService _exportService;
 
-        public EmployeeController(IEmployeeService service, UserManager<IdentityUser> userManager)
+        public EmployeeController(IEmployeeService service, UserManager<IdentityUser> userManager, IExportService exportService)
         {
-            _service = service;
+            _employeeService = service;
             _userManager = userManager;
+            _exportService = exportService;
         }
 
         private string? GetUserId() => _userManager.GetUserId(User);
@@ -31,7 +33,7 @@ namespace EmployeeManagmentApp.Controllers
                 return Challenge();
             }
 
-            var employees = await _service.GetEmployeesAsync(userId);
+            var employees = await _employeeService.GetEmployeesAsync(userId);
             return View(employees);
         }
         [HttpGet]
@@ -43,7 +45,7 @@ namespace EmployeeManagmentApp.Controllers
                 return Challenge();
             }
 
-            var employee = await _service.GetEmployeeAsync(id, userId);
+            var employee = await _employeeService.GetEmployeeAsync(id, userId);
             if (employee is null)
             {
                 return NotFound();
@@ -70,7 +72,7 @@ namespace EmployeeManagmentApp.Controllers
             {
                 return View(employee);
             }
-            var createdEmployee = await _service.AddEmployeeAsync(employee, userId);
+            var createdEmployee = await _employeeService.AddEmployeeAsync(employee, userId);
             if (createdEmployee == null)
             {
                 ModelState.AddModelError("Pesel", "Pracownik z takim numerem pesel juz istnieje");
@@ -89,7 +91,7 @@ namespace EmployeeManagmentApp.Controllers
                 return Challenge();
             }
 
-            var employee = await _service.GetEmployeeAsync(id, userId);
+            var employee = await _employeeService.GetEmployeeAsync(id, userId);
             if (employee is null)
             {
                 return NotFound();
@@ -110,7 +112,7 @@ namespace EmployeeManagmentApp.Controllers
             {
                 return View(employee);
             }
-            var updatedEmployee = await _service.UpdateEmployeeAsync(employee, userId);
+            var updatedEmployee = await _employeeService.UpdateEmployeeAsync(employee, userId);
 
             if (updatedEmployee == null)
             {
@@ -131,7 +133,7 @@ namespace EmployeeManagmentApp.Controllers
                 return Challenge();
             }
 
-            var success = await _service.DeleteEmployeeAsync(id, userId);
+            var success = await _employeeService.DeleteEmployeeAsync(id, userId);
             if (!success)
             {
                 return NotFound();
@@ -149,7 +151,7 @@ namespace EmployeeManagmentApp.Controllers
                 return Challenge();
             }
 
-            var employees = await _service.SearchEmployeesAsync(firstName, lastName, pesel, city, userId);
+            var employees = await _employeeService.SearchEmployeesAsync(firstName, lastName, pesel, city, userId);
             return View(employees);
         }
 
@@ -167,48 +169,12 @@ namespace EmployeeManagmentApp.Controllers
             {
                 return Challenge();
             }
-            var employees = await _service.GetEmployeesAsync(userId);
+            var employees = await _employeeService.GetEmployeesAsync(userId);
 
-            using (var package = new ExcelPackage())
-            {
-                var worksheet = package.Workbook.Worksheets.Add("Employees");
-                worksheet.Cells["A1"].Value = "Id";
-                worksheet.Cells["B1"].Value = "Imię";
-                worksheet.Cells["C1"].Value = "Nazwisko";
-                worksheet.Cells["D1"].Value = "Pesel";
-                worksheet.Cells["E1"].Value = "Email";
-                worksheet.Cells["F1"].Value = "Numer telefonu";
-                worksheet.Cells["G1"].Value = "Pensja";
-                worksheet.Cells["H1"].Value = "Data zatrudnienia";
-                worksheet.Cells["I1"].Value = "Miasto";
-                worksheet.Cells["J1"].Value = "Ulica";
-                worksheet.Cells["K1"].Value = "Numer domu";
-                worksheet.Cells["L1"].Value = "Numer mieszkania";
-                worksheet.Cells["M1"].Value = "Kod pocztowy";
+            var fileBytes = _exportService.GenerateEmployeesExcel(employees);
 
-
-
-
-                for(var i = 0; i < employees.Count; i++)
-                {
-                    worksheet.Cells[i + 2, 1].Value = employees[i].Id;
-                    worksheet.Cells[i + 2, 2].Value = employees[i].FirstName;
-                    worksheet.Cells[i + 2, 3].Value = employees[i].LastName;
-                    worksheet.Cells[i + 2, 4].Value = employees[i].Pesel;
-                    worksheet.Cells[i + 2, 5].Value = employees[i].Email;
-                    worksheet.Cells[i + 2, 6].Value = employees[i].Phone;
-                    worksheet.Cells[i + 2, 7].Value = employees[i].Salary;
-                    worksheet.Cells[i + 2, 8].Value = employees[i].HireDate;
-                    worksheet.Cells[i + 2, 9].Value = employees[i].Address.City;
-                    worksheet.Cells[i + 2, 10].Value = employees[i].Address.StreetName;
-                    worksheet.Cells[i + 2, 11].Value = employees[i].Address.HouseNumber;
-                    worksheet.Cells[i + 2, 12].Value = employees[i].Address.ApartamentNumber;
-                    worksheet.Cells[i + 2, 13].Value = employees[i].Address.PostalCode;
-                }
-
-                var stream = new MemoryStream(package.GetAsByteArray());
-                return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "employees.xlsx");
-            }
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "employees.xlsx");
         }
     }
 }
+

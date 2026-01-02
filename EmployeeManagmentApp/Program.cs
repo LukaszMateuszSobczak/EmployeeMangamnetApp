@@ -14,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //START DI Container
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IExportService, ExportService>();
 
 // END DI Container
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
