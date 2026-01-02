@@ -1,0 +1,158 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model Employee
+
+<div class="conatiner mb-3">
+    <div class="row">
+        <div class="col offset-md2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2>Dodaj pracownika</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @* <div asp-validation-summary="All" class="text-danger"></div> *@
+                        <h4 class="my-3">Dane osobowe</h4>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="FirstName" class="form-label">Imię</label>
+                                    <input asp-for="FirstName" class="form-control" placeholder="Wprowadź imię" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="LastName" class="form-label">Nazwisko</label>
+                                    <input asp-for="LastName" class="form-control" placeholder="Wprowadź nazwisko" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Pesel" class="form-label">Pesel</label>
+                                    <input asp-for="Pesel" class="form-control" placeholder="Wprowadź pesel" />
+                                    <span asp-validation-for="Pesel" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Position" class="form-label">Stanowisko</label>
+                                    <input asp-for="Position" class="form-control" placeholder="Wprowadź stanowisko" />
+                                    <span asp-validation-for="Position" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Salary" class="form-label">Pensja</label>
+                                    <input asp-for="Salary" class="form-control" placeholder="Wprowadź pensje" />
+                                    <span asp-validation-for="Salary" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="HireDate" class="form-label">Data zatrudnienia</label>
+                                    <input asp-for="HireDate" type="date" max="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" placeholder="Wprowadź date zatrudnienia" />
+                                    <span asp-validation-for="HireDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="my-3">Dane adresowe</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Address.City" class="form-label">Miasto</label>
+                                    <input asp-for="Address.City" class="form-control" placeholder="Wprowadź miasto" />
+                                    <span asp-validation-for="Address.City" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Address.StreetName" class="form-label">Ulica</label>
+                                    <input asp-for="Address.StreetName" class="form-control" placeholder="Wprowadź ulicę" />
+                                    <span asp-validation-for="Address.StreetName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Address.HouseNumber" class="form-label">Numer domu</label>
+                                    <input asp-for="Address.HouseNumber" class="form-control" placeholder="Wprowadź numer domu" />
+                                    <span asp-validation-for="Address.HouseNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Address.ApartamentNumber" class="form-label">Numer mieszkania</label>
+                                    <input asp-for="Address.ApartamentNumber" class="form-control" placeholder="Wprowadź numer mieszkania" />
+                                    <span asp-validation-for="Address.ApartamentNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Address.PostalCode" class="form-label">Kod pocztowy</label>
+                                    <input asp-for="Address.PostalCode" class="form-control" placeholder="Wprowadź kod pocztowy" />
+                                    <span asp-validation-for="Address.PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="my-3">Dane kontaktowe</h4>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="Wprowadź email" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Phone" class="form-label">Numer telefonu</label>
+                                    <input asp-for="Phone" class="form-control" placeholder="Wprowadź numer telefonu" />
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="d-flex justify-content-between my-3">
+                            <a asp-action="Index" asp-controller="Employee" class="btn btn-danger">Anuluj</a>
+                            <button type="submit" class="btn btn-success">Dodaj</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // akceptuj liczby z przecinkiem lub kropką
+        $.validator.methods.number = function (value, element) {
+            if (this.optional(element)) {
+                return true;
+            }
+
+            value = value.replace(",", "."); // zamiana , na . przed sprawdzeniem
+
+            return !isNaN(value) && !isNaN(parseFloat(value));
+        };
+
+        // polski komunikat
+        $.extend($.validator.messages, {
+            number: "Pole musi być liczbą."
+        });
+    </script>
+}
