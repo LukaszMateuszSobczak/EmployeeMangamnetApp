@@ -20,6 +20,7 @@ This application demonstrates a production-ready approach to employee data manag
 - ✅ **ASP.NET Core Identity** - Industry-standard authentication
 - ✅ **Responsive UI** - Bootstrap 5 mobile-first design
 - ✅ **Polish Localization** - Custom validation messages and UI text
+- ✅ **Export to CSV/Excel** - Allows users to export data to CSV or Excel files.
 
 ## 🛠️ Tech Stack
 
@@ -29,6 +30,7 @@ This application demonstrates a production-ready approach to employee data manag
 - Entity Framework Core
 - ASP.NET Core Identity
 - SQL Server
+- EPPlus
 
 **Frontend:**
 - Razor Views
