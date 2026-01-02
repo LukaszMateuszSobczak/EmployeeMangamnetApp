@@ -20,6 +20,7 @@ This application demonstrates a production-ready approach to employee data manag
 - ✅ **ASP.NET Core Identity** - Industry-standard authentication
 - ✅ **Responsive UI** - Bootstrap 5 mobile-first design
 - ✅ **Polish Localization** - Custom validation messages and UI text
+- ✅ **Export to CSV/Excel** - Allows users to export data to CSV or Excel files.
 
 ## 🛠️ Tech Stack
 
@@ -29,6 +30,7 @@ This application demonstrates a production-ready approach to employee data manag
 - Entity Framework Core
 - ASP.NET Core Identity
 - SQL Server
+- EPPlus
 
 **Frontend:**
 - Razor Views
@@ -97,7 +99,7 @@ Each employee record includes:
 
 **Personal Information:**
 - First Name, Last Name
-- PESEL (Polish national ID - validated format)
+- PESEL (Polish national ID - validated format), unique
 - Email, Phone
 
 **Employment Details:**
@@ -177,7 +179,7 @@ dotnet run
 
 ## 🧪 Validation Rules
 
-- **PESEL:** Exactly 11 digits
+- **PESEL:** Exactly 11 digits, must be unique among employees belonging to the same user
 - **Email:** Valid email format
 - **Phone:** Exactly 9 digits
 - **Postal Code:** Polish format (XX-XXX)

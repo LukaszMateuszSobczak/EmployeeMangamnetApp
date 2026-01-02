@@ -13,6 +13,26 @@ namespace EmployeeManagmentApp.Services
             _context = context;
         }
 
+        private Employee CapitalizeEmployeeFields(Employee employee)
+        {
+            employee.FirstName = CapitalizeFirstLetter(employee.FirstName);
+            employee.LastName = CapitalizeFirstLetter(employee.LastName);
+            employee.Position = CapitalizeFirstLetter(employee.Position);
+            employee.Address.StreetName = CapitalizeFirstLetter(employee.Address.StreetName);
+            employee.Address.City = CapitalizeFirstLetter(employee.Address.City);
+            return employee;
+        }
+        private string CapitalizeFirstLetter(string text)
+        {
+            if(string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+            text = text.Trim();
+            text = char.ToUpper(text[0]) + text.Substring(1).ToLower();
+            return text;
+        }
+
         public async Task<List<Employee>> GetEmployeesAsync(string userId)
         {
             var employees = await _context.Employees.Where(e => e.UserId == userId).Include(e => e.Address).ToListAsync();
@@ -25,8 +45,15 @@ namespace EmployeeManagmentApp.Services
             return employee;
         }
 
-        public async Task<Employee> AddEmployeeAsync(Employee employee, string userId)
+        public async Task<Employee?> AddEmployeeAsync(Employee employee, string userId)
         {
+            var existEmployeePesel = await _context.Employees.FirstOrDefaultAsync(e => e.Pesel == employee.Pesel && e.UserId == userId);
+            if (existEmployeePesel is not null)
+            {
+                return null;
+            }
+
+            employee = CapitalizeEmployeeFields(employee);
             employee.UserId = userId;
             employee.CreatedAt = DateTime.UtcNow;
             await _context.Employees.AddAsync(employee);
@@ -43,6 +70,14 @@ namespace EmployeeManagmentApp.Services
                 return null;
             }
 
+            var existingPesel = await _context.Employees.FirstOrDefaultAsync(e => e.Pesel == employee.Pesel && e.Id != employee.Id && e.UserId == userId);
+
+            if (existingPesel != null)
+            {
+                return null;
+            }
+
+            employee = CapitalizeEmployeeFields(employee);
 
             existing.FirstName = employee.FirstName;
             existing.LastName = employee.LastName;
@@ -58,15 +93,13 @@ namespace EmployeeManagmentApp.Services
             {
                 existing.Address = new Address();
             }
-               
+            
             existing.Address.City = employee.Address.City;
             existing.Address.StreetName = employee.Address.StreetName;
             existing.Address.HouseNumber = employee.Address.HouseNumber;
             existing.Address.ApartamentNumber = employee.Address.ApartamentNumber;
             existing.Address.PostalCode = employee.Address.PostalCode;
 
-
-            //_context.Employees.Update(existing);
             await _context.SaveChangesAsync();
             return existing;
         }
@@ -78,6 +111,7 @@ namespace EmployeeManagmentApp.Services
             {
                 return false;
             }
+
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return true;
@@ -110,35 +144,6 @@ namespace EmployeeManagmentApp.Services
             return query.ToListAsync();
 
         }
-
-
-        //stara wersja
-        public async Task<List<Employee>> SearchEmployeesByFirstNameAsync(string firstName)
-        {
-            var employees = await _context.Employees.Include(e => e.Address).Where(e => e.FirstName.ToLower().Contains(firstName.ToLower())).ToListAsync();
-            return employees;
-        }
-
-        public async Task<List<Employee>> SearchEmployeesByLastNameAsync(string lastName)
-        {
-            var employees = await _context.Employees.Include(e => e.Address).Where(e => e.LastName.ToLower().Contains(lastName.ToLower())).ToListAsync();
-            return employees;
-        }
-
-        public async Task<List<Employee>> SearchEmployeesByPeselAsync(string pesel)
-        {
-            var employees = await _context.Employees.Include(e => e.Address).Where(e => e.Pesel == pesel).ToListAsync();
-            return employees;
-        }
-
-        public async Task<List<Employee>> SearchEmployeesByCityAsync(string city)
-        {
-            var employees = await _context.Employees.Include(e => e.Address).Where(e => e.Address.City == city).ToListAsync();
-            return employees;
-        }
-
-
-
 
     }
 }
