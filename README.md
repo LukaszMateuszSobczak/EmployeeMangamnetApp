@@ -144,6 +144,7 @@ cd EmployeeAppIdentity
 ```
 
 3. **Apply database migrations**
+
 ```bash
 dotnet ef database update
 ```
@@ -165,15 +166,23 @@ dotnet run
 
 ### Employee List
 ![Employee List](docs/employee-list.png)
+![Employee Details](docs/employee-details.png)
 *Main view with search and CRUD actions*
 
 ### Advanced Search
-![Search](docs/search.png)
+![Search](docs/employee-search.png)
 *Filter employees by multiple criteria*
 
 ### Employee Form
-![Create/Edit](docs/employee-form.png)
+![Create](docs/employee-create.png)
+![Edit](docs/employee-edit.png)
+![Validation](docs/employee-validation.png)
 *Comprehensive validation for all fields*
+
+### Export to Excel or CSV
+![Export excel](docs/employee-excel.png)
+![Export csv](docs/employee-csv.png)
+
 
 > **Note:** Add screenshots to the `docs/` folder to display them here
 
@@ -199,21 +208,54 @@ $.validator.methods.number = function (value, element) {
 ## 📂 Project Structure
 
 ```
-EmployeeAppIdentity/
+EmployeeManagmentApp/
 ├── Controllers/
-│   └── EmployeeController.cs      # MVC controller with authorization
+│   └── EmployeeController.cs
+│
 ├── Services/
-│   ├── IEmployeeService.cs        # Service interface
-│   └── EmployeeService.cs         # Business logic + data access
+│   ├── Interfaces/
+│   │   ├── IEmployeeService.cs
+│   │   └── IExportService.cs
+│   ├── DTOs/
+│   │   └── EmployeeCsvDto.cs
+│   ├── EmployeeService.cs
+│   └── ExportService.cs
+│
 ├── Models/
-│   ├── Employee.cs                # Employee entity
-│   └── Address.cs                 # Address entity (1-to-1)
+│   ├── Employee.cs
+│   └── Address.cs
+│
 ├── Data/
-│   ├── ApplicationDbContext.cs    # EF Core context
-│   └── Migrations/                # Database migrations
+│   ├── ApplicationDbContext.cs
+│   └── Migrations/
+│       ├── 20260102182942_SeedData.cs
+│       └── ApplicationDbContextModelSnapshot.cs
+│
 ├── Views/
-│   └── Employee/                  # Razor views (Index, Create, Edit, etc.)
-└── Areas/Identity/                # ASP.NET Core Identity scaffolded pages
+│   ├── Employee/
+│   │   ├── Index.cshtml
+│   │   ├── Create.cshtml
+│   │   ├── Edit.cshtml
+│   │   ├── Details.cshtml
+│   │   ├── Search.cshtml
+│   │   ├── Export.cshtml
+│   │   └── _EmployeesTable.cshtml (partial)
+│   └── Shared/
+│       ├── _Layout.cshtml
+│       └── Error.cshtml
+│
+├── Areas/
+│   └── Identity/
+│       └── Pages/
+│           └── (scaffolded Identity pages)
+│
+├── wwwroot/
+│   ├── css/
+│   ├── js/
+│   └── lib/
+│
+├── Program.cs
+├── appsettings.json
 ```
 
 ## 🎓 Learning Objectives
@@ -230,7 +272,6 @@ This project demonstrates:
 ## 🔮 Future Enhancements
 
 - [ ] Pagination for large datasets
-- [ ] Export to CSV/Excel
 - [ ] Employee photo upload
 - [ ] Soft delete functionality
 - [ ] Advanced reporting (salary statistics, etc.)

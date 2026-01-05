@@ -147,6 +147,7 @@ namespace EmployeeManagmentApp.Controllers
             {
                 return NotFound();
             }
+            TempData["SuccessMessage"] = "Pomyślnie usunięto pracownika";
             return RedirectToAction("Index");
         }
 
