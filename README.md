@@ -184,7 +184,6 @@ dotnet run
 ![Export csv](docs/employee-csv.png)
 
 
-> **Note:** Add screenshots to the `docs/` folder to display them here
 
 ## 🧪 Validation Rules
 
